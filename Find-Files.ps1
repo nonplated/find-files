@@ -36,18 +36,18 @@ function Find-Files {
     #search every location
     ForEach ($Dir in $Dirs) {
         $TotalLength = 0 #file size [B]
-        $Counter = 0
+        $TotalFiles = 0
         Get-Childitem $Dir -Include $SearchPattern -Recurse -ErrorAction SilentlyContinue | 
             ForEach-Object { 
-                $TotalLength+=$_.Length; 
-                $Counter+=1; 
+                $TotalLength += $_.Length; 
+                $TotalFiles += 1; 
                 if ($PrintFileNames) { "$_" }; 
             }
         if ($Summary) {
             $TotalLength = ($TotalLength/(1024*1024)).ToString('0') #convert B to MB
             Write-Host ""
             Write-Host " # In directory: $Dir"
-            Write-Host " # Total files: $Counter"
+            Write-Host " # Total files: $TotalFiles"
             Write-Host " # Total size: $TotalLength MB"
         }
     }
@@ -61,16 +61,15 @@ function Find-Files {
 Find-Files *.pdf
 #search all fixed drives (without removable drives)
 
-
-Find-Files *.pdf -RemovableDrives           
-#search all drives included removable (like CD-ROM, USB-Flash)
+Find-Files *.pdf -PrintFileNames
+#search all fixed drives and plot file names (full path)
 
 Find-Files *.pdf -Dirs @("C:\Windows","C:\Users") 
 #search only selected directories (with all subdirs)
-
-Find-Files *.pdf -PrintFileNames
-#search all fixed drives and plot file names (full path)
                                               
+Find-Files *.pdf -RemovableDrives           
+#search all drives included removable (like CD-ROM, USB-Flash)
+
 Find-Files *.pdf -PrintFileNames | Out-File -FilePath "C:\output.txt" 
 #if you want to save filenames output to file
 
